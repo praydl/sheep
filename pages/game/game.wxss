@@ -1,0 +1,332 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 12rpx 24rpx 36rpx;
+}
+
+/* --------------------------------- 顶栏 --------------------------------- */
+
+.hud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6rpx 6rpx 14rpx;
+}
+
+.hud__left {
+  display: flex;
+  align-items: baseline;
+  min-width: 180rpx;
+}
+
+.hud__label {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.hud__num {
+  margin-left: 10rpx;
+  font-size: 38rpx;
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.18);
+}
+
+.hud__title {
+  font-size: 34rpx;
+  font-weight: 800;
+  letter-spacing: 6rpx;
+  color: #ffffff;
+  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.22);
+}
+
+.hud__btn {
+  min-width: 132rpx;
+  padding: 10rpx 0;
+  text-align: center;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  color: #2f6b2a;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 4rpx 0 rgba(0, 0, 0, 0.12);
+}
+
+.hud__btn.is-off {
+  color: #8a8a8a;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+/* -------------------------------- 牌堆区 -------------------------------- */
+
+.stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.board {
+  position: relative;
+}
+
+.tile {
+  position: absolute;
+  width: 84rpx;
+  height: 84rpx;
+  box-sizing: border-box;
+  /* 内边距只留 6rpx：图标要占满整张牌 3/4 以上，太小会看不清牌型 */
+  padding: 6rpx;
+  border-radius: 14rpx;
+  background: linear-gradient(180deg, #fffdf4 0%, #f6e9c9 100%);
+  border: 2rpx solid #e3d0a0;
+  box-shadow: 0 4rpx 0 #d8c187, 0 8rpx 12rpx rgba(60, 40, 0, 0.16);
+  overflow: hidden;
+}
+
+.tile__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* 被压住的牌压暗，提示不可点。
+   注意别用高不透明度：多层叠压时 alpha 会累乘叠加，0.42 叠 4 层就是 89% 全黑。
+   0.24 叠 4 层约 66%，既有「越深越暗」的层次，又能看清底下的图案。 */
+.tile.is-covered::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.24);
+}
+
+/* ---------------------------- 每种牌自己的底色 ---------------------------- */
+/* 全白牌面太单调，而且牌型只能靠图标分辨。给每种牌一个主题浅色底，
+   配合图标一眼就能分出类型；颜色都压得很淡，不会抢图标。 */
+
+.tile--carrot {
+  background: linear-gradient(180deg, #ffefe0 0%, #ffd9bf 100%);
+  border-color: #f2c69b;
+  box-shadow: 0 4rpx 0 #e2ab78, 0 8rpx 12rpx rgba(60, 40, 0, 0.16);
+}
+
+.tile--grass {
+  background: linear-gradient(180deg, #eef9e3 0%, #dcefcf 100%);
+  border-color: #bbdca0;
+  box-shadow: 0 4rpx 0 #a5ca8a, 0 8rpx 12rpx rgba(30, 60, 10, 0.16);
+}
+
+.tile--wool {
+  background: linear-gradient(180deg, #f3f2fb 0%, #e4e1f1 100%);
+  border-color: #c9c4de;
+  box-shadow: 0 4rpx 0 #b1abcb, 0 8rpx 12rpx rgba(40, 35, 70, 0.16);
+}
+
+.tile--bell {
+  background: linear-gradient(180deg, #fff8d3 0%, #ffe9a6 100%);
+  border-color: #f0d27c;
+  box-shadow: 0 4rpx 0 #dcbb63, 0 8rpx 12rpx rgba(80, 60, 0, 0.16);
+}
+
+.tile--milk {
+  /* 瓶子本身是白的，底色太浅就糊在一起了，蓝色要比其他牌略深 */
+  background: linear-gradient(180deg, #dcecfa 0%, #c6dff5 100%);
+  border-color: #9ec6e6;
+  box-shadow: 0 4rpx 0 #86b1d5, 0 8rpx 12rpx rgba(20, 50, 80, 0.16);
+}
+
+.tile--corn {
+  background: linear-gradient(180deg, #fffae2 0%, #fff0bc 100%);
+  border-color: #eddc97;
+  box-shadow: 0 4rpx 0 #d9c67c, 0 8rpx 12rpx rgba(70, 60, 10, 0.16);
+}
+
+.tile--mushroom {
+  background: linear-gradient(180deg, #fdede6 0%, #f8d8cc 100%);
+  border-color: #e9b6a6;
+  box-shadow: 0 4rpx 0 #d79e8c, 0 8rpx 12rpx rgba(80, 35, 20, 0.16);
+}
+
+.tile--apple {
+  /* 比蘑菇更偏洋红，两者容易混 */
+  background: linear-gradient(180deg, #fbd9dc 0%, #f4bfc6 100%);
+  border-color: #e0929c;
+  box-shadow: 0 4rpx 0 #cc7d88, 0 8rpx 12rpx rgba(90, 25, 30, 0.16);
+}
+
+.tile--sun {
+  background: linear-gradient(180deg, #fff5d8 0%, #ffe4a6 100%);
+  border-color: #f3cd82;
+  box-shadow: 0 4rpx 0 #dfb663, 0 8rpx 12rpx rgba(85, 60, 0, 0.16);
+}
+
+.tile--clover {
+  background: linear-gradient(180deg, #e7f7f0 0%, #cdebdf 100%);
+  border-color: #a8d8c6;
+  box-shadow: 0 4rpx 0 #90c4b1, 0 8rpx 12rpx rgba(15, 65, 50, 0.16);
+}
+
+.tile.is-shake {
+  animation: tile-shake 0.3s ease;
+}
+
+@keyframes tile-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-6rpx) rotate(-3deg);
+  }
+  75% {
+    transform: translateX(6rpx) rotate(3deg);
+  }
+}
+
+/* --------------------------------- 卡槽 --------------------------------- */
+
+.slotbar {
+  display: flex;
+  justify-content: center;
+  margin-top: 44rpx;
+}
+
+.slot {
+  display: flex;
+  padding: 12rpx;
+  border-radius: 24rpx;
+  background: linear-gradient(180deg, #a9743f 0%, #7c4f22 100%);
+  box-shadow: inset 0 4rpx 10rpx rgba(0, 0, 0, 0.35), 0 8rpx 18rpx rgba(0, 0, 0, 0.18);
+}
+
+.slot__cell {
+  width: 72rpx;
+  height: 72rpx;
+  margin-right: 8rpx;
+  border-radius: 12rpx;
+  background: rgba(0, 0, 0, 0.22);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slot__cell:last-child {
+  margin-right: 0;
+}
+
+.slot__cell--empty {
+  box-shadow: inset 0 2rpx 6rpx rgba(0, 0, 0, 0.3);
+}
+
+.slot__img {
+  /* 卡槽格子只有 72rpx，留一点内边距，别让图标顶到格子边缘 */
+  width: 88%;
+  height: 88%;
+  animation: slot-pop 0.18s ease-out;
+}
+
+.slot__img.is-clearing {
+  animation: slot-clear 0.24s ease-in forwards;
+}
+
+@keyframes slot-pop {
+  from {
+    transform: scale(0.35);
+    opacity: 0.3;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes slot-clear {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+}
+
+/* -------------------------------- 弹窗 --------------------------------- */
+
+.mask {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 24, 8, 0.55);
+}
+
+.dialog {
+  width: 570rpx;
+  padding: 44rpx 38rpx 40rpx;
+  box-sizing: border-box;
+  border-radius: 34rpx;
+  text-align: center;
+  background: linear-gradient(180deg, #fffdf6 0%, #f2e6c8 100%);
+  box-shadow: 0 24rpx 60rpx rgba(0, 0, 0, 0.32);
+  animation: dialog-in 0.2s ease-out;
+}
+
+@keyframes dialog-in {
+  from {
+    transform: scale(0.86);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.dialog__icon {
+  width: 168rpx;
+  height: 168rpx;
+  margin-bottom: 10rpx;
+}
+
+.dialog__title {
+  font-size: 42rpx;
+  font-weight: 800;
+  color: #3d2f17;
+}
+
+.dialog__desc {
+  margin-top: 16rpx;
+  font-size: 26rpx;
+  line-height: 1.65;
+  color: #7a6a4d;
+}
+
+.dialog__btn {
+  margin-top: 36rpx;
+  height: 92rpx;
+  line-height: 92rpx;
+  border-radius: 46rpx;
+  font-size: 32rpx;
+  font-weight: 800;
+  letter-spacing: 2rpx;
+  color: #ffffff;
+  background: linear-gradient(180deg, #8bd45f 0%, #4ea63c 100%);
+  box-shadow: 0 6rpx 0 #3d8a2e, 0 10rpx 20rpx rgba(61, 138, 46, 0.3);
+}
+
+.dialog__btn:active {
+  transform: translateY(3rpx);
+  box-shadow: 0 3rpx 0 #3d8a2e;
+}

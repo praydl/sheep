@@ -1,0 +1,53 @@
+<view class="page">
+  <view class="hud">
+    <view class="hud__left">
+      <text class="hud__label">剩余</text>
+      <text class="hud__num">{{remaining}}</text>
+    </view>
+    <view class="hud__title">羊了个羊</view>
+    <view class="hud__btn {{muted ? 'is-off' : ''}}" bindtap="toggleMute">{{muted ? '已静音' : '音效'}}</view>
+  </view>
+
+  <view class="stage">
+    <view class="board" style="width:{{boardW}}rpx;height:{{boardH}}rpx;">
+      <view
+        wx:for="{{tiles}}"
+        wx:key="id"
+        class="tile tile--{{item.type}} {{item.covered ? 'is-covered' : ''}} {{item.shake ? 'is-shake' : ''}}"
+        style="left:{{item.left}}rpx;top:{{item.top}}rpx;z-index:{{item.z}};"
+        data-id="{{item.id}}"
+        bindtap="onTapTile"
+      >
+        <image class="tile__img" src="/assets/icons/{{item.type}}.png" mode="aspectFit" />
+      </view>
+    </view>
+
+    <view class="slotbar">
+      <view class="slot">
+        <view class="slot__cell" wx:for="{{slot}}" wx:key="id">
+          <image
+            class="slot__img {{item.clearing ? 'is-clearing' : ''}}"
+            src="/assets/icons/{{item.type}}.png"
+            mode="aspectFit"
+          />
+        </view>
+        <view class="slot__cell slot__cell--empty" wx:for="{{emptyCells}}" wx:key="*this"></view>
+      </view>
+    </view>
+  </view>
+
+  <view class="mask" wx:if="{{status !== 'playing'}}">
+    <view class="dialog">
+      <image class="dialog__icon" src="/assets/icons/sheep.png" mode="aspectFit" />
+      <view class="dialog__title" wx:if="{{status === 'win'}}">通关啦！</view>
+      <view class="dialog__title" wx:elif="{{status === 'lose'}}">卡槽满了</view>
+      <view class="dialog__title" wx:else>羊了个羊</view>
+
+      <view class="dialog__desc" wx:if="{{status === 'win'}}">所有牌都消完了，羊群安全了</view>
+      <view class="dialog__desc" wx:elif="{{status === 'lose'}}">卡槽 7 格塞满，还没凑齐三张</view>
+      <view class="dialog__desc" wx:else>点牌放进卡槽，三张相同自动消除。卡槽塞满 7 格就输，全部消完就赢</view>
+
+      <view class="dialog__btn" bindtap="start">{{status === 'idle' ? '开始游戏' : '再来一局'}}</view>
+    </view>
+  </view>
+</view>
